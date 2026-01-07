@@ -2,7 +2,7 @@ name: Daily Snowboard Data Scraper
 
 on:
   schedule:
-    - cron: '0 2 * * *'
+    - cron: '0 2 * * *'  # 每天UTC时间2点（北京时间10点）
   workflow_dispatch:
   push:
     branches: [ main ]
@@ -19,6 +19,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Setup Python
       uses: actions/setup-python@v4
@@ -30,12 +32,103 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests beautifulsoup4 lxml
         
+    - name: Create necessary directories
+      run: |
+        mkdir -p logs data web/images
+        
     - name: Run snowboard scraper
-      run: python src/scraper.py
-      
+      run: |
+        python src/scraper.py
+        
     - name: Generate HTML report
-      run: python src/generate_html.py
-      
+      run: |
+        python -c "
+import json
+import os
+from datetime import datetime
+
+# 读取数据
+with open('web/data.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+products = data.get('products', [])
+metadata = data.get('metadata', {})
+
+# 生成简单的HTML报告
+html = f'''<!DOCTYPE html>
+<html lang=\"zh-CN\">
+<head>
+    <meta charset=\"UTF-8\">
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+    <title>雪板产品数据报告</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }}
+        .container {{ max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }}
+        .header {{ text-align: center; margin-bottom: 30px; }}
+        .product-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }}
+        .product-card {{ border: 1px solid #ddd; padding: 15px; border-radius: 8px; }}
+        .product-image {{ max-width: 100%; height: 200px; object-fit: cover; }}
+        .price {{ color: #e74c3c; font-weight: bold; }}
+        .original-price {{ text-decoration: line-through; color: #999; }}
+    </style>
+</head>
+<body>
+    <div class=\"container\">
+        <div class=\"header\">
+            <h1>🏂 雪板产品数据报告</h1>
+            <p>更新时间: {metadata.get('last_updated', '未知')} | 产品数量: {len(products)}</p>
+        </div>
+        <div class=\"product-grid\">
+'''
+
+for product in products:
+    image_src = product.get('local_image', '')
+    if image_src and os.path.exists(f'web/images/{image_src}'):
+        img_tag = f'<img src=\"images/{image_src}\" alt=\"{product[\"name\"]}\" class=\"product-image\">'
+    else:
+        img_tag = '<div style=\"height: 200px; background: #f0f0f0; display: flex; align-items: center; justify-content: center;\">暂无图片</div>'
+    
+    price_html = f'<div class=\"price\">{product.get(\"current_price\", \"价格待定\")}</div>'
+    if product.get('original_price'):
+        price_html = f'<div class=\"original-price\">{product[\"original_price\"]}</div> {price_html}'
+    if product.get('discount'):
+        price_html += f' <span style=\"background: #27ae60; color: white; padding: 2px 6px; border-radius: 3px;\">{product[\"discount\"]}</span>'
+    
+    html += f'''
+            <div class=\"product-card\">
+                {img_tag}
+                <h3>{product.get(\"brand\", \"\")} - {product.get(\"name\", \"\")}</h3>
+                <div class=\"price\">{price_html}</div>
+                <div>类别: {product.get(\"category\", \"\")}</div>
+            </div>
+    '''
+
+html += '''
+        </div>
+    </div>
+</body>
+</html>
+'''
+
+# 保存HTML文件
+with open('web/index.html', 'w', encoding='utf-8') as f:
+    f.write(html)
+
+print('✅ HTML报告已生成')
+"
+
+    - name: Create .nojekyll file
+      run: |
+        touch web/.nojekyll
+        
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Actions"
+        git add data/ web/ logs/
+        git status
+        git diff --staged --quiet || (git commit -m "🤖 Auto-update: $(date +'%Y-%m-%d %H:%M')" && git push origin main) || echo "没有更改可提交"
+        
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
@@ -51,4 +144,5 @@ jobs:
         path: |
           web/
           data/
+          logs/
         retention-days: 7
