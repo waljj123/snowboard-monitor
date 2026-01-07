@@ -1,0 +1,40 @@
+# .github/workflows/deploy-pages.yml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'data/**'
+      - 'web/**'
+  schedule:
+    - cron: '0 19 * * *'  # 爬虫完成后1小时部署
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
+      
+    - name: Build static site
+      run: |
+        # 生成HTML文件
+        python src/generate_html.py
+        
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: './web'
+        
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1
