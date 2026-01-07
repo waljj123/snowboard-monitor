@@ -19,7 +19,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        token: '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'  # 使用GITHUB_TOKEN
+        token: '${{ secrets.GITHUB_TOKEN }}'  # 使用GITHUB_TOKEN
     
     - name: Setup Python
       uses: actions/setup-python@v4
