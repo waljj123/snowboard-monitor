@@ -1,0 +1,42 @@
+{
+  "last_updated": "2026-01-07T07:24:00.210606",
+  "product_count": 3,
+  "products": [
+    {
+      "id": "1",
+      "brand": "Burton",
+      "name": "Custom X Snowboard 2024",
+      "current_price": 899.99,
+      "original_price": 999.99,
+      "discount": "10%",
+      "image_url": "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=300",
+      "product_url": "https://snowboards.com/products/burton-custom-x",
+      "category": "男子雪板",
+      "scraped_at": "2026-01-07T07:24:00.210593"
+    },
+    {
+      "id": "2",
+      "brand": "Lib Tech",
+      "name": "Golden Orca Snowboard",
+      "current_price": 849.99,
+      "original_price": null,
+      "discount": null,
+      "image_url": "https://images.unsplash.com/photo-1543457508-8d5d0ef5d65b?w=300",
+      "product_url": "https://snowboards.com/products/libtech-golden-orca",
+      "category": "男子雪板",
+      "scraped_at": "2026-01-07T07:24:00.210601"
+    },
+    {
+      "id": "3",
+      "brand": "Salomon",
+      "name": "Women's Rhythm Snowboard",
+      "current_price": 599.99,
+      "original_price": 699.99,
+      "discount": "14%",
+      "image_url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300",
+      "product_url": "https://snowboards.com/products/salomon-womens-rhythm",
+      "category": "女子雪板",
+      "scraped_at": "2026-01-07T07:24:00.210604"
+    }
+  ]
+}
