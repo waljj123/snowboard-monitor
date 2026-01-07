@@ -23,33 +23,93 @@
     </view>
   </view>
 
-  <!-- 最新雪板 -->
-  <view class="section">
-    <view class="section-header">
-      <text class="section-title">最新雪板</text>
-      <text class="section-more" bindtap="goToSnowboards">查看更多</text>
-    </view>
+  <!-- 搜索和筛选 -->
+  <view class="filter-section">
+    <input 
+      placeholder="搜索雪板品牌或名称..." 
+      bindinput="onSearchInput"
+      class="search-input"
+    />
     
-    <view class="product-list">
-      <view 
-        wx:for="{{latestProducts}}" 
-        wx:key="id" 
-        class="product-item" 
-        bindtap="viewProduct" 
-        data-product="{{item}}"
+    <view class="filter-controls">
+      <picker 
+        range="{{['所有品牌', 'Burton', 'Lib Tech', 'Salomon', 'K2', 'Capita', 'Ride', 'Rome', 'Never Summer', 'Gnu', 'Arbor', 'Bataleon', 'YES', 'Rossignol', 'Roxy']}}" 
+        bindchange="onBrandFilter"
+        class="filter-picker"
       >
-        <image src="{{item.image}}" mode="aspectFill" class="product-image"></image>
-        <view class="product-info">
-          <text class="product-brand">{{item.brand}}</text>
-          <text class="product-name">{{item.name}}</text>
-          <text class="product-price">{{item.current_price || '价格待定'}}</text>
+        <view class="picker-label">
+          {{filterBrand || '所有品牌'}}
+        </view>
+      </picker>
+      
+      <picker 
+        range="{{['按名称', '价格从低到高', '价格从高到低', '按品牌']}}" 
+        bindchange="onSortChange"
+        class="filter-picker"
+      >
+        <view class="picker-label">
+          {{sortBy === 'name' ? '按名称' : sortBy === 'price_low' ? '价格从低到高' : sortBy === 'price_high' ? '价格从高到低' : '按品牌'}}
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 产品列表 -->
+  <view class="product-list">
+    <view 
+      wx:for="{{displayedProducts}}" 
+      wx:key="id" 
+      class="product-card"
+      bindtap="viewProduct"
+      data-product="{{item}}"
+    >
+      <image 
+        src="{{item.image}}" 
+        mode="aspectFill" 
+        class="product-image"
+        binderror="onImageError"
+        data-index="{{index}}"
+      />
+      <view class="product-info">
+        <text class="product-brand">{{item.brand}}</text>
+        <text class="product-name">{{item.name}}</text>
+        <view class="price-section">
+          <text class="current-price">{{item.current_price || '价格待定'}}</text>
+          <text wx:if="{{item.original_price}}" class="original-price">{{item.original_price}}</text>
+          <text wx:if="{{item.discount}}" class="discount">{{item.discount}}</text>
+        </view>
+        <text class="category">{{item.category}}</text>
+        <view class="action-buttons">
+          <button 
+            class="copy-btn" 
+            bindtap="copyPriceInfo" 
+            data-product="{{item}}"
+            size="mini"
+          >
+            复制价格
+          </button>
         </view>
       </view>
     </view>
   </view>
 
+  <!-- 加载更多 -->
+  <view wx:if="{{hasMore && !loading}}" class="load-more">
+    <button bindtap="loadMore" class="load-more-btn">加载更多</button>
+  </view>
+
   <!-- 加载状态 -->
   <view wx:if="{{loading}}" class="loading">
     <text>加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!loading && displayedProducts.length === 0}}" class="empty">
+    <text>暂无雪板数据</text>
+  </view>
+
+  <!-- 没有更多数据 -->
+  <view wx:if="{{!hasMore && displayedProducts.length > 0}}" class="no-more">
+    <text>已显示全部数据</text>
   </view>
 </view>

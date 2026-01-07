@@ -1,0 +1,70 @@
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-section">
+    <input 
+      placeholder="搜索雪板品牌或名称..." 
+      bindinput="onSearchInput"
+      class="search-input"
+    />
+  </view>
+
+  <!-- 筛选栏 -->
+  <view class="filter-section">
+    <picker 
+      range="{{brands}}" 
+      bindchange="onBrandFilter" 
+      class="filter-picker"
+    >
+      <view class="picker-label">
+        {{filterBrand || '选择品牌'}}
+      </view>
+    </picker>
+    
+    <picker 
+      range="{{['按名称', '价格从低到高', '价格从高到低']}}" 
+      bindchange="onSortChange"
+      class="filter-picker"
+    >
+      <view class="picker-label">
+        {{sortBy === 'name' ? '按名称' : sortBy === 'price_low' ? '价格从低到高' : '价格从高到低'}}
+      </view>
+    </picker>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 雪板列表 -->
+  <view wx:else class="snowboard-list">
+    <view 
+      wx:for="{{filteredSnowboards}}" 
+      wx:key="id" 
+      class="snowboard-card"
+      bindtap="viewProductDetail"
+      data-product="{{item}}"
+    >
+      <image 
+        src="{{item.image}}" 
+        mode="aspectFill" 
+        class="snowboard-image"
+      />
+      <view class="snowboard-info">
+        <text class="brand">{{item.brand}}</text>
+        <text class="name">{{item.name}}</text>
+        <view class="price-section">
+          <text class="current-price">{{item.current_price || '价格待定'}}</text>
+          <text wx:if="{{item.original_price}}" class="original-price">{{item.original_price}}</text>
+          <text wx:if="{{item.discount}}" class="discount">{{item.discount}}</text>
+        </view>
+        <text class="category">{{item.category}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!loading && filteredSnowboards.length === 0}}" class="empty">
+    <text>暂无雪板数据</text>
+  </view>
+</view>
