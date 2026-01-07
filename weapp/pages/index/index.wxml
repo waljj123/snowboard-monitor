@@ -1,0 +1,58 @@
+<view class="container">
+  <!-- 头部横幅 -->
+  <view class="banner">
+    <image src="/images/banner.jpg" mode="aspectFill" class="banner-image"></image>
+    <view class="banner-content">
+      <text class="banner-title">🏂 雪板价格监控</text>
+      <text class="banner-desc">实时追踪最新雪板价格和折扣</text>
+    </view>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="stats-grid">
+    <view class="stat-card">
+      <text class="stat-number">{{stats.total}}</text>
+      <text class="stat-label">总产品数</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-number">{{stats.brands}}</text>
+      <text class="stat-label">品牌数量</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-number">{{stats.updated}}</text>
+      <text class="stat-label">今日更新</text>
+    </view>
+  </view>
+
+  <!-- 快捷功能 -->
+  <view class="quick-actions">
+    <view class="action-card" bindtap="goToSnowboards">
+      <image src="/images/icon_board.png" class="action-icon"></image>
+      <text class="action-text">查看雪板</text>
+    </view>
+    <view class="action-card" bindtap="searchDiscount">
+      <image src="/images/icon_discount.png" class="action-icon"></image>
+      <text class="action-text">特价雪板</text>
+    </view>
+    <view class="action-card" bindtap="viewFavorites">
+      <image src="/images/icon_favorite.png" class="action-icon"></image>
+      <text class="action-text">我的收藏</text>
+    </view>
+  </view>
+
+  <!-- 最新雪板 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">最新雪板</text>
+      <text class="section-more" bindtap="goToSnowboards">查看更多</text>
+    </view>
+    <view class="product-list">
+      <view wx:for="{{latestProducts}}" wx:key="id" class="product-item" bindtap="viewProduct" data-product="{{item}}">
+        <image src="{{item.image}}" mode="aspectFill" class="product-image"></image>
+        <view class="product-info">
+          <text class="product-brand">{{item.brand}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
