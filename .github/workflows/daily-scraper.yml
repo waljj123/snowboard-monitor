@@ -1,19 +1,20 @@
-# .github/workflows/daily-scraper.yml
 name: Daily Snowboard Data Scraper
 
 on:
   schedule:
-    # 每天凌晨2点运行（UTC时间，对应中国时间10点）
-    - cron: '0 18 * * *'
+    # 每天北京时间上午10点运行 (UTC时间凌晨2点)
+    - cron: '0 2 * * *'
   workflow_dispatch:  # 允许手动触发
+  push:
+    branches: [ main ]
 
 jobs:
-  scrape-and-update:
+  scrape-data:
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4  # 更新到v4版本
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         
@@ -24,25 +25,24 @@ jobs:
         
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
+        python -m pip install --upgrade pip
+        pip install -r src/requirements.txt
         
     - name: Run snowboard scraper
       run: |
         python src/scraper.py
-        # 生成时间戳文件
-        echo "Last updated: $(date)" > data/last_updated.txt
+        python src/generate_html.py
         
-    - name: Commit and push if changed
+    - name: Commit and push changes
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add data/
-        git add web/
+        git add data/ web/
         
         # 检查是否有变更
         if git diff --staged --quiet; then
           echo "No changes to commit"
         else
-          git commit -m "🤖 Auto-update snowboard data $(date +'%Y-%m-%d %H:%M')"
+          git commit -m "🤖 Auto-update: $(date +'%Y-%m-%d %H:%M')"
           git push
         fi
