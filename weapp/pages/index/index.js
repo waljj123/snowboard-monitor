@@ -3,9 +3,10 @@ Page({
     stats: {
       total: 0,
       brands: 0,
-      updated: '--'
+      lastUpdated: ''
     },
-    latestProducts: []
+    latestProducts: [],
+    loading: true
   },
 
   onLoad() {
@@ -30,12 +31,14 @@ Page({
         }
       },
       fail: (err) => {
+        console.error('数据加载失败:', err)
         wx.showToast({
           title: '数据加载失败',
           icon: 'none'
         })
       },
       complete: () => {
+        this.setData({ loading: false })
         callback && callback()
       }
     })
@@ -46,42 +49,32 @@ Page({
     const products = data.products || []
     const metadata = data.metadata || {}
     
-    // 更新统计信息
     this.setData({
       stats: {
         total: metadata.total_products || products.length,
         brands: metadata.unique_brands || new Set(products.map(p => p.brand)).size,
-        updated: metadata.last_updated ? metadata.last_updated.split(' ')[1] : '--'
+        lastUpdated: metadata.last_updated || '未知'
       },
       latestProducts: products.slice(0, 6).map(p => ({
         id: p.id,
         brand: p.brand,
         name: p.name,
-        image: p.local_image ? `${getApp().globalData.baseUrl}/web/images/${p.local_image}` : p.image_url
+        current_price: p.current_price,
+        image: p.local_image ? 
+          `${getApp().globalData.baseUrl}/web/images/${p.local_image}` : 
+          p.image_url
       }))
     })
   },
 
-  // 页面跳转
+  // 跳转到雪板列表
   goToSnowboards() {
     wx.navigateTo({
       url: '/pages/snowboards/snowboards'
     })
   },
 
-  searchDiscount() {
-    wx.navigateTo({
-      url: '/pages/snowboards/snowboards?filter=discount'
-    })
-  },
-
-  viewFavorites() {
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
-    })
-  },
-
+  // 查看产品详情
   viewProduct(e) {
     const product = e.currentTarget.dataset.product
     wx.navigateTo({
