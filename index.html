@@ -1,0 +1,172 @@
+
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>🏂 雪板价格监控系统</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 20px;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                overflow: hidden;
+            }
+            .header {
+                background: #2c3e50;
+                color: white;
+                padding: 30px;
+                text-align: center;
+            }
+            .stats {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                flex-wrap: wrap;
+                margin: 20px 0;
+            }
+            .stat-item {
+                background: #3498db;
+                padding: 10px 20px;
+                border-radius: 20px;
+                font-size: 14px;
+            }
+            .product-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 20px;
+                padding: 20px;
+            }
+            .product-card {
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                overflow: hidden;
+                transition: transform 0.3s;
+            }
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            }
+            .product-image {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+                background: #f5f5f5;
+            }
+            .product-info {
+                padding: 15px;
+            }
+            .product-brand {
+                color: #7f8c8d;
+                font-size: 12px;
+                text-transform: uppercase;
+            }
+            .product-name {
+                font-weight: bold;
+                margin: 5px 0;
+                line-height: 1.4;
+            }
+            .price {
+                color: #e74c3c;
+                font-weight: bold;
+                font-size: 1.2em;
+            }
+            .original-price {
+                text-decoration: line-through;
+                color: #95a5a6;
+                margin-right: 10px;
+            }
+            .discount {
+                background: #27ae60;
+                color: white;
+                padding: 2px 6px;
+                border-radius: 3px;
+                font-size: 0.8em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🏂 雪板价格监控系统</h1>
+                <p>基于GitHub Actions的自动化价格监控</p>
+                <div class="stats">
+                    <div class="stat-item">产品总数: 3</div>
+                    <div class="stat-item">最后更新: 2026-01-07T07:24:00.210606</div>
+                    <div class="stat-item">数据来源: Snowboards.com</div>
+                </div>
+            </div>
+            
+            <div class="product-grid">
+    
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=300" 
+                         alt="Custom X Snowboard 2024" 
+                         class="product-image"
+                         onerror="this.src='https://via.placeholder.com/300x200?text=暂无图片'">
+                    <div class="product-info">
+                        <div class="product-brand">Burton</div>
+                        <div class="product-name">Custom X Snowboard 2024</div>
+                        <div class="price">
+                            <span class="original-price">$999.99</span>
+                            <span class="current-price">$899.99</span>
+                            <span class="discount">10%</span>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1543457508-8d5d0ef5d65b?w=300" 
+                         alt="Golden Orca Snowboard" 
+                         class="product-image"
+                         onerror="this.src='https://via.placeholder.com/300x200?text=暂无图片'">
+                    <div class="product-info">
+                        <div class="product-brand">Lib Tech</div>
+                        <div class="product-name">Golden Orca Snowboard</div>
+                        <div class="price">
+                            
+                            <span class="current-price">$849.99</span>
+                            
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300" 
+                         alt="Women's Rhythm Snowboard" 
+                         class="product-image"
+                         onerror="this.src='https://via.placeholder.com/300x200?text=暂无图片'">
+                    <div class="product-info">
+                        <div class="product-brand">Salomon</div>
+                        <div class="product-name">Women's Rhythm Snowboard</div>
+                        <div class="price">
+                            <span class="original-price">$699.99</span>
+                            <span class="current-price">$599.99</span>
+                            <span class="discount">14%</span>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+            
+            <div style="text-align: center; padding: 20px; color: #7f8c8d; font-size: 14px;">
+                <p>🤖 本页面由GitHub Actions自动生成 | 更新频率: 每日</p>
+                <p>📱 最后生成时间: 2026-01-07 07:24:00</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    
